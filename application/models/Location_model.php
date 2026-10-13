@@ -1,28 +1,28 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Category_model extends CI_Model {
+class Location_model extends CI_Model {
 
-    // Mengambil semua data kategori
+    // Mengambil semua data lokasi
     public function get_all() {
         $this->db->order_by('id', 'DESC');
-        return $this->db->get('categories')->result_array();
+        return $this->db->get('locations')->result_array();
     }
 
-    // Menyimpan kategori baru
+    // Menyimpan lokasi baru
     public function insert($data) {
-        return $this->db->insert('categories', $data);
+        return $this->db->insert('locations', $data);
     }
 
-    // Mengubah kategori yang ada
+    // Mengubah lokasi yang ada
     public function update($id, $data) {
         $this->db->where('id', $id);
-        return $this->db->update('categories', $data);
+        return $this->db->update('locations', $data);
     }
 
-    // Menghapus kategori
+    // Menghapus lokasi
     public function delete($id) {
         $this->db->where('id', $id);
-        return $this->db->delete('categories');
+        return $this->db->delete('locations');
     }
 }

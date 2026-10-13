@@ -13,7 +13,7 @@
                     <!-- KELOMPOK MASTER DATA -->
                     <div class="sidebar-heading">Master Data</div>
                     <li>
-                        <a href="#"><i class="fas fa-laptop"></i> <span>Data Aset</span></a>
+                        <a href="<?= site_url('asset') ?>"><i class="fas fa-laptop"></i> <span>Data Aset</span></a>
                     </li>
                     <li>
                         <a href="<?= site_url('category') ?>"><i class="fas fa-tags"></i> <span>Kategori Aset</span></a>
@@ -25,7 +25,7 @@
                         <a href="<?= site_url('department') ?>"><i class="fas fa-building"></i> <span>Departemen</span></a>
                     </li>
                     <li>
-                        <a href="#"><i class="fas fa-users"></i> <span>Data Karyawan</span></a>
+                        <a href="<?= site_url('employee') ?>"><i class="fas fa-users"></i> <span>Data Karyawan</span></a>
                     </li>
 
                     <!-- KELOMPOK TRANSAKSI -->
