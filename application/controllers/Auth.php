@@ -64,13 +64,14 @@ class Auth extends CI_Controller {
         }
     }
 
-    private function redirect_based_on_role() {
-        if ($this->session->userdata('role') == 'admin') {
-            redirect('admin/dashboard');
-        } else {
-            redirect('employee/dashboard');
-        }
-    }
+        private function redirect_based_on_role() {
+                if ($this->session->userdata('role') == 'admin') {
+                    redirect('admin/dashboard');
+                } else {
+                    // Ubah baris ini dari employee/dashboard menjadi user_panel
+                    redirect('user_panel'); 
+                }
+            }
 
     public function logout() {
         // Hancurkan session dan kembali ke login

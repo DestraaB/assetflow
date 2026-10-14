@@ -28,4 +28,15 @@ class Asset_model extends CI_Model {
     public function get_by_id($id) {
         return $this->db->get_where('assets', ['id' => $id])->row_array();
     }
+    // KHUSUS KARYAWAN: Mengambil aset yang siap dipinjam
+    public function get_available_assets() {
+        $this->db->select('assets.*, categories.name as category_name');
+        $this->db->from('assets');
+        $this->db->join('categories', 'assets.category_id = categories.id', 'left');
+        $this->db->where('assets.is_archived', 0);
+        $this->db->where('assets.operational_status', 'available'); // Harus tersedia
+        $this->db->where('assets.management_type', 'borrowable');   // Sifatnya boleh dipinjam sementara
+        $this->db->order_by('assets.name', 'ASC');
+        return $this->db->get()->result_array();
+    }
 }
