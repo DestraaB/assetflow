@@ -35,7 +35,7 @@
                             <p class="card-text text-muted small mb-3">S/N: <?= $row['serial_number'] ?: '-'; ?></p>
                             
                             <!-- Tombol ini nanti akan diarahkan ke form pengajuan -->
-                            <a href="#" class="btn btn-outline-primary w-100 mt-auto fw-medium">
+                                <a href="<?= site_url('borrowing/request/'.$row['id']) ?>" class="btn btn-outline-primary w-100 mt-auto fw-medium">
                                 Ajukan Pinjaman
                             </a>
                         </div>
