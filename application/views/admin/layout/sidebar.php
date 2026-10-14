@@ -43,7 +43,7 @@
                     <!-- KELOMPOK SISTEM -->
                     <div class="sidebar-heading">Sistem</div>
                     <li>
-                        <a href="#"><i class="fas fa-chart-line"></i> <span>Laporan & Analitik</span></a>
+                        <a href="<?= site_url('report') ?>"><i class="fas fa-chart-line"></i> <span>Laporan & Analitik</span></a>
                     </li>
                     <li>
                         <a href="#"><i class="fas fa-cog"></i> <span>Pengaturan</span></a>

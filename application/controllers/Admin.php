@@ -6,14 +6,13 @@ class Admin extends CI_Controller {
     public function __construct() {
         parent::__construct();
         
-        // PROTEKSI: Cek apakah user sudah login dan rolenya adalah admin
+        // PROTEKSI
         if ($this->session->userdata('role') !== 'admin') {
             $this->session->set_flashdata('error_msg', 'Anda tidak memiliki akses ke halaman Admin!');
             redirect('auth');
         }
     }
 
-    // Jika user mengakses /admin, langsung arahkan ke dashboard
     public function index() {
         redirect('admin/dashboard');
     }
@@ -22,9 +21,28 @@ class Admin extends CI_Controller {
         $data['title'] = 'Dashboard Admin - AssetFlow';
         $data['user_name'] = $this->session->userdata('name');
 
-        // Nanti kita akan memanggil model di sini untuk mengambil data jumlah aset asli dari database
-        // Untuk sekarang, kita load view-nya dulu
+        // MENGHITUNG STATISTIK DARI DATABASE (Hanya yang tidak diarsipkan)
+        
+        // 1. Total Semua Aset
+        $this->db->where('is_archived', 0);
+        $data['total_asset'] = $this->db->count_all_results('assets');
 
+        // 2. Aset Tersedia (available)
+        $this->db->where('is_archived', 0);
+        $this->db->where('operational_status', 'available');
+        $data['asset_available'] = $this->db->count_all_results('assets');
+
+        // 3. Aset Sedang Dipinjam (in_use)
+        $this->db->where('is_archived', 0);
+        $this->db->where('operational_status', 'in_use');
+        $data['asset_borrowed'] = $this->db->count_all_results('assets');
+
+        // 4. Aset Dalam Perbaikan (maintenance)
+        $this->db->where('is_archived', 0);
+        $this->db->where('operational_status', 'maintenance');
+        $data['asset_maintenance'] = $this->db->count_all_results('assets');
+
+        // Load View
         $this->load->view('admin/layout/header', $data);
         $this->load->view('admin/layout/sidebar');
         $this->load->view('admin/layout/topbar', $data);

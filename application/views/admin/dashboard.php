@@ -8,7 +8,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <p class="text-muted mb-1 small fw-bold text-uppercase">Total Aset</p>
-                        <h3 class="mb-0 fw-bold text-dark">0</h3>
+                        <h3 class="mb-0 fw-bold text-dark"><?= $total_asset; ?></h3>
                     </div>
                     <div class="icon-box bg-primary bg-opacity-10 text-primary">
                         <i class="fas fa-laptop"></i>
@@ -23,7 +23,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <p class="text-muted mb-1 small fw-bold text-uppercase">Tersedia</p>
-                        <h3 class="mb-0 fw-bold text-success">0</h3>
+                        <h3 class="mb-0 fw-bold text-success"><?= $asset_available; ?></h3>
                     </div>
                     <div class="icon-box bg-success bg-opacity-10 text-success">
                         <i class="fas fa-check-circle"></i>
@@ -38,7 +38,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <p class="text-muted mb-1 small fw-bold text-uppercase">Sedang Dipinjam</p>
-                        <h3 class="mb-0 fw-bold text-warning">0</h3>
+                        <h3 class="mb-0 fw-bold text-warning"><?= $asset_borrowed; ?></h3>
                     </div>
                     <div class="icon-box bg-warning bg-opacity-10 text-warning">
                         <i class="fas fa-handshake"></i>
@@ -53,7 +53,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <p class="text-muted mb-1 small fw-bold text-uppercase">Dalam Perbaikan</p>
-                        <h3 class="mb-0 fw-bold text-danger">0</h3>
+                        <h3 class="mb-0 fw-bold text-danger"><?= $asset_maintenance; ?></h3>
                     </div>
                     <div class="icon-box bg-danger bg-opacity-10 text-danger">
                         <i class="fas fa-tools"></i>
