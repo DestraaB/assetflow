@@ -22,4 +22,18 @@ class Welcome extends CI_Controller {
 	{
 		$this->load->view('welcome_message');
 	}
+	// Halaman Riwayat Peminjaman Karyawan
+    public function history() {
+        $data['title'] = 'Peminjamanku - AssetFlow';
+        $data['user_name'] = $this->session->userdata('name');
+        
+        $user_id = $this->session->userdata('user_id');
+        // Kita menggunakan fungsi get_by_user() yang sudah dibuat di Borrowing_model sebelumnya
+        $data['borrowings'] = $this->Borrowing_model->get_by_user($user_id);
+
+        $this->load->view('employee/layout/header', $data);
+        $this->load->view('employee/layout/navbar', $data);
+        $this->load->view('employee/history', $data); // Kita akan buat file ini
+        $this->load->view('employee/layout/footer');
+    }
 }

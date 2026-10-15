@@ -11,11 +11,16 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                     <li class="nav-item">
-                        <a class="nav-link active" href="<?= site_url('user_panel') ?>"><i class="fas fa-th-large me-1"></i> Katalog Aset</a>
+                        <a class="nav-link <?= ($this->uri->segment(2) == '') ? 'active' : ''; ?>" href="<?= site_url('user_panel') ?>">
+                            <i class="fas fa-th-large me-1"></i> Katalog Aset
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-handshake me-1"></i> Peminjamanku</a>
+                        <a class="nav-link <?= ($this->uri->segment(2) == 'history') ? 'active' : ''; ?>" href="<?= site_url('user_panel/history') ?>">
+                            <i class="fas fa-handshake me-1"></i> Peminjamanku
+                        </a>
                     </li>
+                    <!-- Menu Inventaris Saya bisa dibiarkan mati sementara (href="#") -->
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fas fa-laptop-house me-1"></i> Inventaris Saya</a>
                     </li>

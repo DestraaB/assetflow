@@ -25,4 +25,25 @@ class Borrowing_model extends CI_Model {
         $this->db->where_in('status', ['pending', 'approved', 'ready_for_handover']);
         return $this->db->get('borrowings')->num_rows();
     }
+
+    // ADMIN: Mengambil SEMUA riwayat peminjaman beserta nama peminjam dan barangnya
+    public function get_all_transactions() {
+        $this->db->select('borrowings.*, assets.name as asset_name, assets.asset_code, users.name as user_name');
+        $this->db->from('borrowings');
+        $this->db->join('assets', 'borrowings.asset_id = assets.id');
+        $this->db->join('users', 'borrowings.user_id = users.id');
+        $this->db->order_by('borrowings.id', 'DESC');
+        return $this->db->get()->result_array();
+    }
+
+    // ADMIN: Mengubah status di tabel borrowings (contoh: dari pending jadi approved)
+    public function update_status($borrowing_id, $status) {
+        $this->db->where('id', $borrowing_id);
+        return $this->db->update('borrowings', ['status' => $status]);
+    }
+
+    // ADMIN: Mengambil 1 data peminjaman spesifik berdasarkan ID
+    public function get_transaction_by_id($id) {
+        return $this->db->get_where('borrowings', ['id' => $id])->row_array();
+    }
 }
