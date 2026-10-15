@@ -59,7 +59,13 @@
                                                 'rejected' => ['Ditolak', 'danger'],
                                                 'canceled' => ['Batal', 'dark']
                                             ];
-                                            $st = $badges[$row['status']];
+                                            // Cek apakah status dari database ada di daftar array $badges
+                                            if (isset($badges[$row['status']])) {
+                                                $st = $badges[$row['status']];
+                                            } else {
+                                                // Jika kosong atau tidak dikenali, gunakan status default (abu-abu)
+                                                $st = ['Tidak Diketahui', 'secondary']; 
+                                            }
                                         ?>
                                         <span class="badge bg-<?= $st[1]; ?> bg-opacity-10 text-<?= $st[1]; ?> border border-<?= $st[1]; ?> border-opacity-25 px-2 py-1">
                                             <?= $st[0]; ?>
