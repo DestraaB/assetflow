@@ -34,4 +34,15 @@ class Report extends CI_Controller {
         // Kita hanya me-load satu file khusus untuk dicetak
         $this->load->view('admin/report/print_assets', $data);
     }
+    // Fungsi khusus untuk mencetak Laporan Peminjaman
+    public function print_borrowings() {
+        // Load model transaksi peminjaman
+        $this->load->model('Borrowing_model');
+        
+        $data['title']  = 'Laporan Transaksi Peminjaman';
+        $data['transactions'] = $this->Borrowing_model->get_all_transactions();
+
+        // Load halaman cetak (tanpa header/sidebar)
+        $this->load->view('admin/report/print_borrowings', $data);
+    }
 }

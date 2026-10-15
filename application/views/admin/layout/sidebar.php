@@ -31,13 +31,13 @@
                     <!-- KELOMPOK TRANSAKSI -->
                     <div class="sidebar-heading">Transaksi</div>
                     <li>
-                        <a href="#"><i class="fas fa-handshake"></i> <span>Peminjaman</span></a>
+                        <a href="<?= site_url('transaction') ?>"><i class="fas fa-handshake"></i> <span>Peminjaman</span></a>
                     </li>
                     <li>
-                        <a href="#"><i class="fas fa-user-check"></i> <span>Penugasan Aset</span></a>
+                        <a href="<?= site_url('assignment') ?>"><i class="fas fa-user-check"></i> <span>Penugasan Aset</span></a>
                     </li>
                     <li>
-                        <a href="#"><i class="fas fa-tools"></i> <span>Maintenance</span></a>
+                        <a href="<?= site_url('maintenance') ?>"><i class="fas fa-tools"></i> <span>Maintenance</span></a>
                     </li>
                     
                     <!-- KELOMPOK SISTEM -->

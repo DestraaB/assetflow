@@ -5,11 +5,6 @@
                 <div class="container-fluid">
                     <h5 class="mb-0 fw-bold text-dark">Welcome, <?= $user_name; ?></h5>
                     <div class="ms-auto d-flex align-items-center">
-                        <!-- Notifikasi -->
-                        <a href="#" class="text-secondary me-4 position-relative">
-                            <i class="fas fa-bell fs-5"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">3</span>
-                        </a>
                         <!-- Profile Dropdown -->
                         <div class="dropdown">
                             <a class="text-decoration-none text-dark fw-medium dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">

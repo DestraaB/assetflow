@@ -32,9 +32,9 @@
                     <h5 class="fw-bold">Laporan Peminjaman</h5>
                     <p class="text-muted small mb-4">Melihat riwayat peminjaman aset oleh karyawan (Masih dalam pengembangan).</p>
                     
-                    <button class="btn btn-light w-100 text-muted" disabled>
-                        <i class="fas fa-lock me-2"></i> Segera Hadir
-                    </button>
+                    <a href="<?= site_url('report/print_borrowings') ?>" target="_blank" class="btn btn-warning w-100 fw-bold text-dark">
+                        <i class="fas fa-print me-2"></i> Cetak Dokumen
+                    </a>
                 </div>
             </div>
         </div>
