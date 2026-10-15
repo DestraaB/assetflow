@@ -13,10 +13,23 @@ class Report extends CI_Controller {
         $this->load->model('Asset_model');
     }
 
-    // Halaman Menu Laporan
+// Halaman Menu Laporan & Analitik
     public function index() {
         $data['title'] = 'Laporan & Analitik - AssetFlow';
         $data['user_name'] = $this->session->userdata('name');
+
+        // ANALITIK 1: Hitung jumlah aset berdasarkan KONDISI (Good, Fair, Damaged, Lost)
+        $this->db->select('condition_status, COUNT(*) as total');
+        $this->db->from('assets');
+        $this->db->where('is_archived', 0);
+        $this->db->group_by('condition_status');
+        $data['condition_stats'] = $this->db->get()->result_array();
+
+        // ANALITIK 2: Hitung Total Nilai Investasi (Total Harga Beli seluruh aset)
+        $this->db->select_sum('purchase_price');
+        $this->db->where('is_archived', 0);
+        $result = $this->db->get('assets')->row_array();
+        $data['total_investment'] = $result['purchase_price'] ? $result['purchase_price'] : 0;
 
         $this->load->view('admin/layout/header', $data);
         $this->load->view('admin/layout/sidebar');

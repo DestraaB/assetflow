@@ -47,7 +47,7 @@ class Asset extends CI_Controller {
         return 'default_asset.png'; // Jika gagal upload / tidak ada foto
     }
 
-    public function add() {
+   public function add() {
         // Cek apakah kode aset sudah ada
         $asset_code = $this->input->post('asset_code', TRUE);
         $cek = $this->db->get_where('assets', ['asset_code' => $asset_code])->num_rows();
@@ -63,6 +63,10 @@ class Asset extends CI_Controller {
             $photo_name = $this->upload_photo();
         }
 
+        // PEMBERSIHAN HARGA MUTLAK (Hanya menyisakan angka)
+        $raw_price = $this->input->post('purchase_price', TRUE);
+        $clean_price = preg_replace('/[^0-9]/', '', $raw_price); // Hapus semua titik/koma/huruf
+
         $data = [
             'asset_code'        => $asset_code,
             'name'              => $this->input->post('name', TRUE),
@@ -74,10 +78,10 @@ class Asset extends CI_Controller {
             'serial_number'     => $this->input->post('serial_number', TRUE),
             'photo'             => $photo_name,
             'purchase_date'     => empty($this->input->post('purchase_date')) ? NULL : $this->input->post('purchase_date', TRUE),
-            'purchase_price'    => empty($this->input->post('purchase_price')) ? 0 : $this->input->post('purchase_price', TRUE),
+            'purchase_price'    => empty($clean_price) ? 0 : $clean_price, // Masukkan harga bersih
             'management_type'   => $this->input->post('management_type', TRUE),
             'condition_status'  => $this->input->post('condition_status', TRUE),
-            'operational_status'=> 'available' // Aset baru selalu 'available' (Tersedia)
+            'operational_status'=> 'available' 
         ];
 
         $this->Asset_model->insert($data);
@@ -94,12 +98,14 @@ class Asset extends CI_Controller {
         // Jika user upload foto baru
         if (!empty($_FILES['photo']['name'])) {
             $photo_name = $this->upload_photo();
-            
-            // Hapus foto lama jika bukan default
             if ($asset_lama['photo'] != 'default_asset.png' && file_exists('./assets/img/assets/'.$asset_lama['photo'])) {
                 unlink('./assets/img/assets/'.$asset_lama['photo']);
             }
         }
+
+        // PEMBERSIHAN HARGA MUTLAK (Hanya menyisakan angka)
+        $raw_price = $this->input->post('purchase_price', TRUE);
+        $clean_price = preg_replace('/[^0-9]/', '', $raw_price); // Hapus semua titik/koma/huruf
 
         $data = [
             'name'              => $this->input->post('name', TRUE),
@@ -111,7 +117,7 @@ class Asset extends CI_Controller {
             'serial_number'     => $this->input->post('serial_number', TRUE),
             'photo'             => $photo_name,
             'purchase_date'     => empty($this->input->post('purchase_date')) ? NULL : $this->input->post('purchase_date', TRUE),
-            'purchase_price'    => empty($this->input->post('purchase_price')) ? 0 : str_replace('.', '', $this->input->post('purchase_price', TRUE)),
+            'purchase_price'    => empty($clean_price) ? 0 : $clean_price, // Masukkan harga bersih
             'management_type'   => $this->input->post('management_type', TRUE),
             'condition_status'  => $this->input->post('condition_status', TRUE)
         ];
@@ -120,7 +126,6 @@ class Asset extends CI_Controller {
         $this->session->set_flashdata('success_msg', 'Data Aset berhasil diperbarui!');
         redirect('asset');
     }
-
     // Mengarsipkan aset (Soft Delete), BUKAN hapus permanen dari database
     public function archive($id) {
         $data = ['is_archived' => 1, 'operational_status' => 'archived'];
