@@ -46,26 +46,35 @@ class Asset extends CI_Controller {
         
         return 'default_asset.png'; // Jika gagal upload / tidak ada foto
     }
-
-   public function add() {
-        // Cek apakah kode aset sudah ada
+public function add() {
+        // 1. Validasi Kode Aset
         $asset_code = $this->input->post('asset_code', TRUE);
-        $cek = $this->db->get_where('assets', ['asset_code' => $asset_code])->num_rows();
+        $cek_kode = $this->db->get_where('assets', ['asset_code' => $asset_code])->num_rows();
 
-        if ($cek > 0) {
+        if ($cek_kode > 0) {
             $this->session->set_flashdata('error_msg', 'Gagal! Kode Aset ('.$asset_code.') sudah digunakan.');
             redirect('asset');
         }
 
-        // Proses foto jika ada
+        // 2. Validasi Nomor Seri (Jika diisi)
+        $serial_number = $this->input->post('serial_number', TRUE);
+        if (!empty($serial_number)) {
+            $cek_sn = $this->db->get_where('assets', ['serial_number' => $serial_number])->num_rows();
+            if ($cek_sn > 0) {
+                $this->session->set_flashdata('error_msg', 'Gagal! Nomor Seri ('.$serial_number.') sudah terdaftar pada aset lain.');
+                redirect('asset');
+            }
+        }
+
+        // 3. Proses Foto
         $photo_name = 'default_asset.png';
         if (!empty($_FILES['photo']['name'])) {
             $photo_name = $this->upload_photo();
         }
 
-        // PEMBERSIHAN HARGA MUTLAK (Hanya menyisakan angka)
+        // 4. Pembersihan Harga (Hanya menyisakan angka)
         $raw_price = $this->input->post('purchase_price', TRUE);
-        $clean_price = preg_replace('/[^0-9]/', '', $raw_price); // Hapus semua titik/koma/huruf
+        $clean_price = preg_replace('/[^0-9]/', '', $raw_price);
 
         $data = [
             'asset_code'        => $asset_code,
@@ -75,10 +84,10 @@ class Asset extends CI_Controller {
             'department_id'     => empty($this->input->post('department_id')) ? NULL : $this->input->post('department_id', TRUE),
             'brand'             => $this->input->post('brand', TRUE),
             'model'             => $this->input->post('model', TRUE),
-            'serial_number'     => $this->input->post('serial_number', TRUE),
+            'serial_number'     => $serial_number,
             'photo'             => $photo_name,
             'purchase_date'     => empty($this->input->post('purchase_date')) ? NULL : $this->input->post('purchase_date', TRUE),
-            'purchase_price'    => empty($clean_price) ? 0 : $clean_price, // Masukkan harga bersih
+            'purchase_price'    => empty($clean_price) ? 0 : $clean_price,
             'management_type'   => $this->input->post('management_type', TRUE),
             'condition_status'  => $this->input->post('condition_status', TRUE),
             'operational_status'=> 'available' 
@@ -93,9 +102,21 @@ class Asset extends CI_Controller {
         $id = $this->input->post('id', TRUE);
         $asset_lama = $this->Asset_model->get_by_id($id);
         
+        // 1. Validasi Nomor Seri saat Edit (Pastikan SN tidak dipakai barang LAIN)
+        $serial_number = $this->input->post('serial_number', TRUE);
+        if (!empty($serial_number)) {
+            $this->db->where('serial_number', $serial_number);
+            $this->db->where('id !=', $id); // Abaikan ID aset ini sendiri
+            $cek_sn = $this->db->get('assets')->num_rows();
+            
+            if ($cek_sn > 0) {
+                $this->session->set_flashdata('error_msg', 'Gagal! Nomor Seri ('.$serial_number.') sudah dipakai barang lain.');
+                redirect('asset');
+            }
+        }
+
+        // 2. Proses Foto
         $photo_name = $asset_lama['photo'];
-        
-        // Jika user upload foto baru
         if (!empty($_FILES['photo']['name'])) {
             $photo_name = $this->upload_photo();
             if ($asset_lama['photo'] != 'default_asset.png' && file_exists('./assets/img/assets/'.$asset_lama['photo'])) {
@@ -103,9 +124,9 @@ class Asset extends CI_Controller {
             }
         }
 
-        // PEMBERSIHAN HARGA MUTLAK (Hanya menyisakan angka)
+        // 3. Pembersihan Harga
         $raw_price = $this->input->post('purchase_price', TRUE);
-        $clean_price = preg_replace('/[^0-9]/', '', $raw_price); // Hapus semua titik/koma/huruf
+        $clean_price = preg_replace('/[^0-9]/', '', $raw_price);
 
         $data = [
             'name'              => $this->input->post('name', TRUE),
@@ -114,10 +135,10 @@ class Asset extends CI_Controller {
             'department_id'     => empty($this->input->post('department_id')) ? NULL : $this->input->post('department_id', TRUE),
             'brand'             => $this->input->post('brand', TRUE),
             'model'             => $this->input->post('model', TRUE),
-            'serial_number'     => $this->input->post('serial_number', TRUE),
+            'serial_number'     => $serial_number,
             'photo'             => $photo_name,
             'purchase_date'     => empty($this->input->post('purchase_date')) ? NULL : $this->input->post('purchase_date', TRUE),
-            'purchase_price'    => empty($clean_price) ? 0 : $clean_price, // Masukkan harga bersih
+            'purchase_price'    => empty($clean_price) ? 0 : $clean_price,
             'management_type'   => $this->input->post('management_type', TRUE),
             'condition_status'  => $this->input->post('condition_status', TRUE)
         ];
@@ -131,6 +152,22 @@ class Asset extends CI_Controller {
         $data = ['is_archived' => 1, 'operational_status' => 'archived'];
         $this->Asset_model->update($id, $data);
         $this->session->set_flashdata('success_msg', 'Aset berhasil diarsipkan. (Tidak dihapus agar riwayat aman)');
+        redirect('asset');
+    }
+    // MENGHAPUS PERMANEN DARI DATABASE & FOLDER
+    public function delete($id) {
+        // Ambil data aset untuk mengetahui nama file fotonya
+        $asset = $this->Asset_model->get_by_id($id);
+        
+        // 1. Hapus file foto dari folder laptop/server (jika bukan foto default)
+        if ($asset['photo'] != 'default_asset.png' && file_exists('./assets/img/assets/'.$asset['photo'])) {
+            unlink('./assets/img/assets/'.$asset['photo']);
+        }
+
+        // 2. Hapus data secara permanen dari database MySQL
+        $this->db->delete('assets', ['id' => $id]);
+        
+        $this->session->set_flashdata('success_msg', 'Data aset dan fotonya berhasil dihapus permanen dari sistem!');
         redirect('asset');
     }
 }

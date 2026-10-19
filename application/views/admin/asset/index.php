@@ -88,8 +88,9 @@
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <!-- Kita pakai Archive, bukan Delete permanen agar riwayat peminjaman tidak error -->
-                                        <a href="<?= site_url('asset/archive/'.$row['id']); ?>" class="btn btn-sm btn-light text-danger" onclick="return confirm('Arsipkan aset ini? Aset tidak akan dihapus permanen tetapi akan hilang dari daftar aktif.');" title="Arsipkan">
-                                            <i class="fas fa-archive"></i>
+                                        <!-- Tombol Hapus Permanen -->
+                                        <a href="<?= site_url('asset/delete/'.$row['id']); ?>" class="btn btn-sm btn-light text-danger" onclick="return confirm('PERINGATAN: Yakin ingin menghapus permanen aset ini? Data dan fotonya akan lenyap dari database!');" title="Hapus Permanen">
+                                            <i class="fas fa-trash"></i>
                                         </a>
                                     </td>
                                 </tr>
